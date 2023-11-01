@@ -9,10 +9,10 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
-import { getProviders } from "./providers";
 import { DefaultJWT } from "next-auth/jwt";
+import { providers } from "./providers";
 
-type User = { id: string; role: string };
+type User = { id: string; role: string,provider:string };
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -21,6 +21,7 @@ declare module "next-auth" {
 
   interface User extends DefaultUser {
     role: string;
+    provider: string;
     // ...other properties
     // role: UserRole;
     //
@@ -159,7 +160,7 @@ export const authOptions: NextAuthOptions = {
     //    }),
   },
 
-  providers: getProviders(),
+  providers: providers,
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);
