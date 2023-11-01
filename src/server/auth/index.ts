@@ -12,7 +12,7 @@ import { db } from "@/server/db";
 import { getProviders } from "./providers";
 import { DefaultJWT } from "next-auth/jwt";
 
-type User = { id: string,role:string };
+type User = { id: string; role: string };
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -32,7 +32,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT extends DefaultJWT {
-    user:User 
+    user: User;
   }
 }
 
@@ -42,20 +42,49 @@ declare module "next-auth/jwt" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  // jwt: {
-  //   async encode(p) {
-  //     if (p.token) {
-  //       let token = jwt.sign(p.token, p.secret);
-  //       return token;
-  //     } else throw "no token to encode";
-  //   },
-  //   async decode(p) {
-  //     if (p.token) {
-  //       let decoded = jwt.verify(p.token, p.secret) as jwt.JwtPayload;
-  //       return decoded;
-  //     } else throw "no token to decode";
-  //   },
-  // },
+  cookies: {
+    sessionToken: {
+      name: `token`,
+      options: {
+        // httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `next-auth.callback-url`,
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `next-auth.csrf-token`,
+      options: {
+        // httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+  },
+  jwt: {
+    async encode(p) {
+      if (p.token) {
+        let token = jwt.sign(p.token, p.secret);
+        return token;
+      } else throw "no token to encode";
+    },
+    // @ts-ignore
+    async decode(p) {
+      if (p.token) {
+        let decoded = jwt.verify(p.token, p.secret) as jwt.JwtPayload;
+        return decoded;
+      } else throw "no token to decode";
+    },
+  },
 
   callbacks: {
     async signIn(p) {
@@ -103,16 +132,16 @@ export const authOptions: NextAuthOptions = {
       //   //@ts-ignore
       //   p.token.userData = user;
       // } else {
-      // p.token.user = p.user 
-          p.token.user = p.user || p.token.user;
+      // p.token.user = p.user
+      p.token.user = p.user || p.token.user;
       // }
       // params.token.customData = params.user?.customData || params.token.customData;
       return p.token;
     },
     async session(p) {
       console.log("callllback sesssssss", p);
-          p.session.user = p.token.user
-      return p.session
+      p.session.user = p.token.user;
+      return p.session;
       // return {
       //   ...session,
       //   user: {

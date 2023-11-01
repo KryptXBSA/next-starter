@@ -8,14 +8,14 @@ import { env } from "@/env.mjs";
 
 export function getProviders() {
   return [
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID!,
-    //   clientSecret: process.env.GITHUB_SECRET!,
-    // }),
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
+    GithubProvider({
+      clientId: env.GITHUB_ID,
+      clientSecret:env.GITHUB_SECRET,
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID!,
+      clientSecret: env.GOOGLE_CLIENT_SECRET!,
+    }),
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
@@ -51,8 +51,9 @@ export function getProviders() {
           // if (typeof createUser.data === "string") {
           //   throw new Error(createUser.data);
           // }
-      console.log("callllback provider",)
-          return {"id":"asdsasd",role:"userrr"};
+          console.log("callllback provider");
+          // throw new Error("invalid password")
+          return { id: "asdsasd", role: "userrr" };
         }
       },
     }),

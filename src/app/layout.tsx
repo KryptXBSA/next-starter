@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { meta } from "@/config/meta";
 import { viewport as v } from "@/config/meta";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("headddd",cookies())
   return (
     <html lang="en">
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
