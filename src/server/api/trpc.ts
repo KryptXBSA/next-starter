@@ -5,7 +5,6 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
-import { db } from "@/server/db";
 
 
 interface CreateContextOptions {
@@ -18,7 +17,6 @@ export const createInnerTRPCContext = async (opts: CreateContextOptions) => {
   return {
     session,
     headers: opts.headers,
-    db,
   };
 };
 

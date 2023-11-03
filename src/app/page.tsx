@@ -9,19 +9,22 @@ import NewPost from "@/components/NewPost";
 export default async function Home() {
   // const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
-  console.log("sesssss",session)
+  console.log("sesssss", session);
+
+  let posts = await api.post.getLatest.query();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center  text-white">
-      <div className="container max-w-xl flex flex-col items-center justify-center gap-6 px-4 py-10 ">
-        <NewPost/>
+    <main className="flex min-h-screen flex-col   text-white">
+      <div className="container flex max-w-xl flex-col items-center justify-center gap-6 px-4 py-10 ">
+        <NewPost />
 
-        <h1 className="text-2xl self-start font-bold tracking-tight ">
+        <h1 className="self-start text-2xl font-bold tracking-tight ">
           Latest Posts
         </h1>
-        <Post/>
+        {posts.map((p) => (
+          <Post {...p} />
+        ))}
       </div>
     </main>
   );
 }
-

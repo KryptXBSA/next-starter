@@ -14,7 +14,7 @@ export function CreatePost() {
       router.refresh();
       setName("");
     },
-  });
+  }).;
 
   return (
     <form
