@@ -3,7 +3,7 @@ import React from "react";
 export function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center ">
-      <svg className="animate-spin-fast h-8 w-8">
+      <svg className="animate-spin h-8 w-8">
         <circle
           cx={16}
           cy={16}

@@ -18,7 +18,6 @@ export default function PostList(props: Props) {
   // to invalidate:
   // let utils=api.useUtils()
   // utils.post.invalidate()
-
   const {
     fetchNextPage,
     fetchPreviousPage,
@@ -30,12 +29,17 @@ export default function PostList(props: Props) {
   } = api.post.getLatest.useInfiniteQuery(
     {},
     {
+      initialData: {
+        pages: [{ posts: props.initialPosts, nextCursor: 2 }],
+        pageParams: [],
+      },
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       // initialCursor: 1, // <-- optional you can pass an initialCursor
     },
   );
 
-  console.log("hasssnext",hasNextPage)
+console.log(getPosts.data),
+  console.log("hasssnext", hasNextPage);
   // const [posts, setPosts] = useState(props.initialPosts);
 
   const [hasMore, setHasMore] = useState(true);
@@ -75,18 +79,7 @@ export default function PostList(props: Props) {
     if (inView && !getPosts.isLoading && hasMore) {
       fetchPosts();
     }
-  }, [
-    getPosts.isLoading,
-    inView,
-    ,
-    // posts
-    hasMore,
-  ]);
-
-  function onPost(data: any) {
-    //@ts-ignore
-    data && setPosts([data, ...posts]);
-  }
+  }, [getPosts.isLoading, inView, , hasMore]);
 
   return (
     <>

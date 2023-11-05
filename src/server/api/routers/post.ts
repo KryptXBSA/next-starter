@@ -27,6 +27,14 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .query(async (opts) => {
+    function delay(milliseconds:number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("Delay completed after " + milliseconds + " milliseconds");
+    }, milliseconds);
+  });
+}
+    await delay(2999)
       console.log("inpp", opts.input);
       const { input } = opts;
       const limit = input.limit ?? 5;

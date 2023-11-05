@@ -24,10 +24,11 @@ export default function NewPost() {
     resolver: zodResolver(formSchema),
   });
 
+  let utils=api.useUtils()
   const router = useRouter();
   const createPost = api.post.create.useMutation({
     onSuccess: () => {
-      router.refresh();
+    utils.post.getLatest.invalidate()
     },
   });
 
