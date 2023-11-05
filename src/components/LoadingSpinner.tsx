@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Spinner() {
+export function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center ">
       <svg className="animate-spin-fast h-8 w-8">

@@ -18,7 +18,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("headddd",cookies())
+  // console.log("headddd",cookies())
   return (
     <html lang="en">
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>

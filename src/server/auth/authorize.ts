@@ -26,7 +26,7 @@ export async function authorize(
       where: { username },
     });
 
-    console.log("uuuu", user);
+    // console.log("uuuu", user);
     if (user) {
       if (await comparePasswords(password, user.password)) {
         return { id: user.id, role: "user", provider: user.provider };

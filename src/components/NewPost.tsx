@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
-import { Spinner } from "./Spinner";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const formSchema = z.object({ body: z.string().min(1).max(255) });
 export default function NewPost() {
@@ -32,8 +32,9 @@ export default function NewPost() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createPost.mutate({ body: values.body });
+    let data=createPost.mutate({ body: values.body });
     form.reset();
+    form.setValue("body","")
   }
   return (
     <Form {...form}>
@@ -61,7 +62,7 @@ export default function NewPost() {
         <Button disabled={createPost.isLoading} className="w-32" type="submit">
           Submit
         </Button>
-        {createPost.isLoading && <Spinner />}
+        {createPost.isLoading && <LoadingSpinner />}
         </div>
       </form>
     </Form>

@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn(p) {
-      console.log("callllback signnnnnnnnnnn", p);
+      // console.log("callllback signnnnnnnnnnn", p);
       let success = true;
       // let body = {};
       // if (!p.credentials) {
@@ -125,7 +125,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt(p) {
-      console.log("callllback jwwwwwwwwwwt", p);
+      // console.log("callllback jwwwwwwwwwwt", p);
       // if (update) {
       //   let { user } = await client.user.getUser.query({
       //     id: p.token.userData.id,
@@ -140,7 +140,7 @@ export const authOptions: NextAuthOptions = {
       return p.token;
     },
     async session(p) {
-      console.log("callllback sesssssss", p);
+      // console.log("callllback sesssssss", p);
       p.session.user = p.token.user;
       return p.session;
       // return {
