@@ -34,7 +34,7 @@ export const postRouter = createTRPCRouter({
     }, milliseconds);
   });
 }
-    await delay(2999)
+    await delay(1199)
       console.log("inpp", opts.input);
       const { input } = opts;
       const limit = input.limit ?? 5;

@@ -38,8 +38,8 @@ export default function PostList(props: Props) {
     },
   );
 
-console.log(getPosts.data),
-  console.log("hasssnext", hasNextPage);
+// console.log(getPosts.data),
+  // console.log("hasssnext", hasNextPage);
   // const [posts, setPosts] = useState(props.initialPosts);
 
   const [hasMore, setHasMore] = useState(true);
