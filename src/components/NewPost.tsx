@@ -17,6 +17,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({ body: z.string().min(1).max(255) });
 export default function NewPost() {
@@ -24,18 +26,25 @@ export default function NewPost() {
     resolver: zodResolver(formSchema),
   });
 
-  let utils=api.useUtils()
+  let utils = api.useUtils();
   const router = useRouter();
+
   const createPost = api.post.create.useMutation({
     onSuccess: () => {
-    utils.post.getLatest.invalidate()
+      utils.post.getLatest.invalidate();
     },
   });
+  const session = useSession();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    let data=createPost.mutate({ body: values.body });
-    form.reset();
-    form.setValue("body","")
+    if (session.status === "authenticated") {
+       createPost.mutate({ body: values.body });
+      form.reset();
+      form.setValue("body", "");
+    } else {
+      toast.error("You're not logged in!")
+      router.push("/login");
+    }
   }
   return (
     <Form {...form}>
@@ -59,11 +68,15 @@ export default function NewPost() {
             )}
           />
         </div>
-        <div className="flex items-center gap-2" >
-        <Button disabled={createPost.isLoading} className="w-32" type="submit">
-          Submit
-        </Button>
-        {createPost.isLoading && <LoadingSpinner />}
+        <div className="flex items-center gap-2">
+          <Button
+            disabled={createPost.isLoading}
+            className="w-32"
+            type="submit"
+          >
+            Submit
+          </Button>
+          {createPost.isLoading && <LoadingSpinner />}
         </div>
       </form>
     </Form>

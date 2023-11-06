@@ -34,16 +34,15 @@ export function LoginForm() {
   });
 
   let router = useRouter();
-  // if (mutation.isSuccess) {
-  //   toast.success("Logging in")
-  //   Cookies.set("token", mutation.data.token, { secure: true })
-  //   router.push("/dashboard")
-  // }
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // mutation.mutate(values)
-    signIn("credentials", { redirect: false, ...values }).then((data) =>
-      console.log("dasdasdasd", data),
-    );
+    signIn("credentials", {
+      redirect: false,
+      ...values,
+      callbackUrl: "/",
+    }).then((res) => {
+      if (res?.ok) router.push("/");
+      else toast.error(res?.error);
+    });
   }
 
   return (

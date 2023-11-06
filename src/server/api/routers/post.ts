@@ -23,25 +23,16 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
-        cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+        cursor: z.number().nullish(),
       }),
     )
     .query(async (opts) => {
-    function delay(milliseconds:number) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("Delay completed after " + milliseconds + " milliseconds");
-    }, milliseconds);
-  });
-}
-    await delay(1199)
-      console.log("inpp", opts.input);
       const { input } = opts;
       const limit = input.limit ?? 5;
       const { cursor } = input;
-    
+
       const posts = await db.post.findMany({
-        take: limit + 1, // get an extra item at the end which we'll use as next cursor
+        take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
           createdAt: "desc",
@@ -54,7 +45,6 @@ export const postRouter = createTRPCRouter({
         const nextItem = posts.pop();
         nextCursor = nextItem!.id;
       }
-    console.log("ressss",nextCursor,posts.length)
 
       return {
         posts,

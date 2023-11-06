@@ -1,4 +1,4 @@
-import {  User } from "next-auth";
+import { User } from "next-auth";
 import bcrypt from "bcrypt";
 
 import { z } from "zod";
