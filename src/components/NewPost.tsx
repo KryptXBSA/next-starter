@@ -24,6 +24,7 @@ const formSchema = z.object({ body: z.string().min(1).max(255) });
 export default function NewPost() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: { body: "" },
   });
 
   let utils = api.useUtils();
@@ -38,11 +39,11 @@ export default function NewPost() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (session.status === "authenticated") {
-       createPost.mutate({ body: values.body });
+      createPost.mutate({ body: values.body });
       form.reset();
       form.setValue("body", "");
     } else {
-      toast.error("You're not logged in!")
+      toast.error("You're not logged in!");
       router.push("/login");
     }
   }

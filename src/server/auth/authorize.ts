@@ -12,11 +12,11 @@ const credentialsSchema = z.object({
 export async function authorize(
   credentials: Record<"username" | "password", string> | undefined,
 ): Promise<User | null> {
-
   if (!credentials) {
     throw new Error("Invalid input");
   }
 
+  let error = "Server error";
   try {
     const validatedCredentials = credentialsSchema.parse(credentials);
 
@@ -26,12 +26,12 @@ export async function authorize(
       where: { username },
     });
 
-    // console.log("uuuu", user);
     if (user) {
       if (await comparePasswords(password, user.password)) {
         return { id: user.id, role: "user", provider: user.provider };
       } else {
-        throw new Error("Invalid password");
+        error = "Invalid password";
+        throw new Error(error);
       }
     } else {
       const newUser = await db.user.create({
@@ -43,12 +43,11 @@ export async function authorize(
       });
       return { id: newUser.id, role: "user", provider: newUser.provider };
     }
-  } catch (error) {
-    console.error(error);
-    if (error instanceof z.ZodError) {
-      throw new Error("Invalid input: " + error.message);
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new Error("Invalid input: " + err.message);
     } else {
-      throw new Error("Server error:");
+      throw new Error(error);
     }
   }
 }
