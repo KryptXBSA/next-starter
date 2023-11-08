@@ -30,11 +30,11 @@ export default function PostList(props: Props) {
     {},
     {
       initialData: {
-        pages: [{ posts: props.initialPosts, nextCursor: 2 }],
+        pages: [{ posts: props.initialPosts, nextCursor: 0 }],
         pageParams: [],
       },
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      // initialCursor: 1, // <-- optional you can pass an initialCursor
+      initialCursor:0,
     },
   );
 

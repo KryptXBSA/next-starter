@@ -22,14 +22,13 @@ export const postRouter = createTRPCRouter({
   getLatest: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
         cursor: z.number().nullish(),
       }),
     )
     .query(async (opts) => {
-      const { input } = opts;
-      const limit = input.limit ?? 5;
-      const { cursor } = input;
+      // limit is how many posts is going to be fetched, currently fetching 5 posts at a time
+      const limit = 5;
+      const { cursor } = opts.input;
 
       const posts = await db.post.findMany({
         take: limit + 1,
@@ -45,7 +44,7 @@ export const postRouter = createTRPCRouter({
         const nextItem = posts.pop();
         nextCursor = nextItem!.id;
       }
-
+      console.log("resss getLatest len,next: ", posts.length, nextCursor);
       return {
         posts,
         nextCursor,

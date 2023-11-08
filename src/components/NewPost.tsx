@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +27,7 @@ export default function NewPost() {
   });
 
   let utils = api.useUtils();
+
   const router = useRouter();
 
   const createPost = api.post.create.useMutation({
@@ -35,6 +35,7 @@ export default function NewPost() {
       utils.post.getLatest.invalidate();
     },
   });
+
   const session = useSession();
 
   function onSubmit(values: z.infer<typeof formSchema>) {

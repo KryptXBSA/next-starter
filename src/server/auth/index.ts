@@ -5,35 +5,24 @@ import {
   type NextAuthOptions,
   DefaultUser,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-
-import { env } from "@/env.mjs";
-import { db } from "@/server/db";
 import { DefaultJWT } from "next-auth/jwt";
 import { providers } from "./providers";
+import { UserData } from "./types";
 
-type User = { id: string; role: string,provider:string };
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: User & DefaultSession["user"];
   }
 
-  interface User extends DefaultUser {
-    role: string;
-    provider: string;
-    // ...other properties
-    // role: UserRole;
-    //
-    //
-    //
+  interface User extends DefaultUser,UserData {
   }
 }
 
 declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT extends DefaultJWT {
-    user: User;
+    user: UserData;
   }
 }
 
@@ -47,7 +36,6 @@ export const authOptions: NextAuthOptions = {
     sessionToken: {
       name: `token`,
       options: {
-        // httpOnly: true,
         sameSite: "lax",
         path: "/",
         secure: true,
@@ -124,20 +112,10 @@ export const authOptions: NextAuthOptions = {
       return success;
     },
 
-    async jwt(p) {
-      // console.log("callllback jwwwwwwwwwwt", p);
-      // if (update) {
-      //   let { user } = await client.user.getUser.query({
-      //     id: p.token.userData.id,
-      //   });
-      //   //@ts-ignore
-      //   p.token.userData = user;
-      // } else {
-      // p.token.user = p.user
-      p.token.user = p.user || p.token.user;
-      // }
-      // params.token.customData = params.user?.customData || params.token.customData;
-      return p.token;
+    async jwt(params) {
+      // at first we get the user data from params.user, then we get the user data fro, params.token.user
+      params.token.user = params.user || params.token.user;
+      return params.token;
     },
     async session(p) {
       // console.log("callllback sesssssss", p);
