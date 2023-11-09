@@ -60,7 +60,7 @@ function validateCredentials(credentials: Credentials) {
 
 // login user with provided password and user data
 async function loginUser(password: string, user: DBUser): Promise<User> {
-  const isValidPassword = await comparePasswords(password, user.password);
+  const isValidPassword = await comparePasswords(password, user.password || "");
   // if password is valid, map user data to the desired User type
   if (isValidPassword) {
     return mapUser(user);
