@@ -1,4 +1,3 @@
-
 import { getServerAuthSession } from "@/server/auth";
 import { Logo } from "@/components/Logo";
 import { LoginBtn } from "./LoginBtn";

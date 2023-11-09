@@ -26,9 +26,9 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .query(async (opts) => {
-      // limit is how many posts is going to be fetched, currently fetching 5 posts at a time
-      const limit = 5;
-      const { cursor } = opts.input;
+      // limit is how many posts is going to be fetched, currently fetching 10 posts at a time
+      const limit = 10;
+      const { cursor } = opts.input || 0;
 
       const posts = await db.post.findMany({
         take: limit + 1,
@@ -36,15 +36,14 @@ export const postRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
-        include: { createdBy: true },
+        include: { createdBy: { select: { username: true, id: true } } },
       });
 
-      let nextCursor: typeof cursor | undefined = undefined;
+      let nextCursor = undefined;
       if (posts.length > limit) {
         const nextItem = posts.pop();
         nextCursor = nextItem!.id;
       }
-      console.log("resss getLatest len,next: ", posts.length, nextCursor);
       return {
         posts,
         nextCursor,

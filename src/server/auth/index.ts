@@ -76,40 +76,42 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn(p) {
-      console.log("callllback signnnnnnnnnnn", p);
-
       let success = true;
+      try {
+        if (!p.credentials && p.account?.provider) {
+          let provider = p.account?.provider;
+          // trim username
+          let username = p.user.name?.replace(/\s/g, "") || "";
+          let email = p.user.email;
 
-      if (!p.credentials && p.account?.provider) {
-        let provider = p.account?.provider;
-        // trim username
-        let username = p.user.name?.replace(/\s/g, "") || "";
-        let email = p.user.email;
-
-        // find user in the database
-        const user = await db.user.findFirst({
-          where: { username },
-        });
-
-        // if there is user, set the user data
-        if (user) {
-          p.user.id = user.id;
-          p.user.provider = user.provider;
-          p.user.username = user.username;
-          // else create a new user and set the user data
-        } else {
-          const newUser = await db.user.create({
-            data: {
-              username: username,
-              provider: provider,
-              email,
-            },
+          // find user in the database
+          const user = await db.user.findFirst({
+            where: { username },
           });
 
-          p.user.id = newUser.id;
-          p.user.provider = newUser.provider;
-          p.user.username = newUser.username;
+          // if there is user, set the user data
+          if (user) {
+            p.user.id = user.id;
+            p.user.provider = user.provider;
+            p.user.username = user.username;
+            // else create a new user and set the user data
+          } else {
+            const newUser = await db.user.create({
+              data: {
+                username: username,
+                provider: provider,
+                email,
+              },
+            });
+
+            p.user.id = newUser.id;
+            p.user.provider = newUser.provider;
+            p.user.username = newUser.username;
+          }
         }
+      } catch (error) {
+        console.error(error);
+        success = false;
       }
       return success;
     },
@@ -122,13 +124,6 @@ export const authOptions: NextAuthOptions = {
     async session(p) {
       p.session.user = p.token.user;
       return p.session;
-      // return {
-      //   ...session,
-      //   user: {
-      //     ...session.user,
-      //     id: token.sub,
-      //   },
-      // };
     },
   },
 

@@ -11,11 +11,12 @@ import { getUrl, transformer } from "./shared";
 export const api = createTRPCProxyClient<AppRouter>({
   transformer,
   links: [
-    loggerLink({
-      enabled: (op) =>
-        process.env.NODE_ENV === "development" ||
-        (op.direction === "down" && op.result instanceof Error),
-    }),
+    // if you want to enable logging uncomment lines below
+    // loggerLink({
+    //   enabled: (op) =>
+    //     process.env.NODE_ENV === "development" ||
+    //     (op.direction === "down" && op.result instanceof Error),
+    // }),
     unstable_httpBatchStreamLink({
       url: getUrl(),
       headers() {

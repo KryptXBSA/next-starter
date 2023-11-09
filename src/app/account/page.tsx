@@ -10,9 +10,9 @@ export default async function Page() {
       <div className="container flex max-w-xl flex-col items-center justify-center gap-6 px-4 py-10 ">
         id: {session?.user.id}
         <br />
-        username:{session?.user.username}
+        username: {session?.user.username}
         <br />
-        provider:{session?.user.provider}
+        provider: {session?.user.provider}
         <LogOutBtn />
       </div>
     </main>

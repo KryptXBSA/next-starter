@@ -2,22 +2,17 @@
 import { Post, User } from "@prisma/client";
 import { FormattedDate } from "./FormattedDate";
 import { api } from "@/trpc/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 type Post0 = {
-  createdBy: User;
+  createdBy: { username: string; id: string };
 } & Post;
 
 type Props = { initialPosts: Post0[] };
 
 export default function PostList(props: Props) {
-  // let getPosts = api.post.getLatest.useInfiniteQuery();
-
-  // to invalidate:
-  // let utils=api.useUtils()
-  // utils.post.invalidate()
   const {
     fetchNextPage,
     fetchPreviousPage,
@@ -25,6 +20,7 @@ export default function PostList(props: Props) {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
+    data,
     ...getPosts
   } = api.post.getLatest.useInfiniteQuery(
     {},
@@ -34,56 +30,21 @@ export default function PostList(props: Props) {
         pageParams: [],
       },
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialCursor:0,
+      initialCursor: 0,
     },
   );
 
-// console.log(getPosts.data),
-  // console.log("hasssnext", hasNextPage);
-  // const [posts, setPosts] = useState(props.initialPosts);
-
-  const [hasMore, setHasMore] = useState(true);
-
-  const { ref, inView } = useInView({
-    threshold: 0,
-  });
-
-  async function fetchPosts() {
-    // const skip = posts?.length || 0;
-    const newPosts = fetchNextPage();
-    // const uniquePosts = removeDuplicates([
-    //   ...(posts || []),
-    //   ...(newPosts?.posts || []),
-    // ]);
-    // setPosts([...(posts || []), ...newPosts.posts]);
-    // setHasMore(newPosts.hasMore);
-  }
-
-  // function removeDuplicates(tweets:any) {
-  //   const tweetSet = new Set();
-  //   return tweets.filter((tweet:any) => {
-  //     if (tweetSet.has(tweet.id)) {
-  //       return false;
-  //     } else {
-  //       tweetSet.add(tweet.id);
-  //       return true;
-  //     }
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   fetchTweets();
-  // }, []);
+  const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView && !getPosts.isLoading && hasMore) {
-      fetchPosts();
+    if (inView && !getPosts.isLoading) {
+      fetchNextPage();
     }
-  }, [getPosts.isLoading, inView, , hasMore]);
+  }, [getPosts.isLoading, inView]);
 
   return (
     <>
-      {getPosts.data?.pages.map((page, i) => (
+      {data?.pages.map((page, i) => (
         <React.Fragment key={i}>
           {page.posts.map((p) => (
             <article key={p.id} className="mr-auto">
