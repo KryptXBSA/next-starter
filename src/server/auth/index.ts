@@ -8,15 +8,14 @@ import {
 import { DefaultJWT } from "next-auth/jwt";
 import { providers } from "./providers";
 import { UserData } from "./types";
-
+import { db } from "../db";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: User & DefaultSession["user"];
   }
 
-  interface User extends DefaultUser,UserData {
-  }
+  interface User extends DefaultUser, UserData {}
 }
 
 declare module "next-auth/jwt" {
@@ -77,38 +76,41 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn(p) {
-      // console.log("callllback signnnnnnnnnnn", p);
+      console.log("callllback signnnnnnnnnnn", p);
+
       let success = true;
-      // let body = {};
-      // if (!p.credentials) {
-      //   let provider = p.account?.provider;
-      //   let username = p.user.name?.replace(/\s/g, "")
-      //   let email = p.user.email;
-      //   body = {
-      //     provider,
-      //     username,
-      //     name: username,
-      //     email,
-      //   };
-      // } else {
-      //   body = {
-      //     provider: "credentials",
-      //     username: p.credentials.username,
-      //     password: p.credentials.password,
-      //   };
-      // }
-      // try {
-      //   // @ts-ignore
-      //   let createUser = await client.user.createUser.mutate({ ...body });
-      //   success = createUser.success;
-      //   let userData = createUser.data;
-      //   if (typeof createUser.data === "string") {
-      //     throw new Error(createUser.data);
-      //   }
-      //   // @ts-ignore
-      // p.user.id='aa'
-      // p.user.userData={"id":"asadassd"}
-      // } catch (e: any) {}
+
+      if (!p.credentials && p.account?.provider) {
+        let provider = p.account?.provider;
+        // trim username
+        let username = p.user.name?.replace(/\s/g, "") || "";
+        let email = p.user.email;
+
+        // find user in the database
+        const user = await db.user.findFirst({
+          where: { username },
+        });
+
+        // if there is user, set the user data
+        if (user) {
+          p.user.id = user.id;
+          p.user.provider = user.provider;
+          p.user.username = user.username;
+          // else create a new user and set the user data
+        } else {
+          const newUser = await db.user.create({
+            data: {
+              username: username,
+              provider: provider,
+              email,
+            },
+          });
+
+          p.user.id = newUser.id;
+          p.user.provider = newUser.provider;
+          p.user.username = newUser.username;
+        }
+      }
       return success;
     },
 
@@ -118,7 +120,6 @@ export const authOptions: NextAuthOptions = {
       return params.token;
     },
     async session(p) {
-      // console.log("callllback sesssssss", p);
       p.session.user = p.token.user;
       return p.session;
       // return {
@@ -129,13 +130,6 @@ export const authOptions: NextAuthOptions = {
       //   },
       // };
     },
-    // session: ({ session, token }) => ({
-    //      ...session,
-    //      user: {
-    //        ...session.user,
-    //        id: token.sub,
-    //      },
-    //    }),
   },
 
   providers: providers,

@@ -22,7 +22,7 @@ model Post {
 model User {
   id            String    @id @default(cuid())
   username      String    @unique
-  password      String
+  password      String?
   provider      String
   email         String?   @unique
   posts         Post[]

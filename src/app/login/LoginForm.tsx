@@ -2,9 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-// import { login } from "@/api/login"
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
 import { GithubIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -51,10 +49,10 @@ export function LoginForm() {
       <Button
         variant="outline"
         className="flex h-12 w-52 gap-2 rounded-lg "
-        onClick={() => signIn("github")}
+        onClick={() => signIn("google")}
       >
-        <GithubIcon className="h-8 w-8" />
-        Login with Github
+        <GoogleIcon className="h-8 w-8" />
+        Login with Google
       </Button>
       <Button
         variant="outline"
@@ -67,10 +65,10 @@ export function LoginForm() {
       <Button
         variant="outline"
         className="flex h-12 w-52 gap-2 rounded-lg "
-        onClick={() => signIn("google")}
+        onClick={() => signIn("github")}
       >
-        <GoogleIcon className="h-8 w-8" />
-        Login with Google
+        <GithubIcon className="h-8 w-8" />
+        Login with Github
       </Button>
       <fieldset className="w-full border-t border-gray-600 sm:w-1/2 md:w-1/3 lg:w-1/4">
         <legend className="mx-auto grow px-2 text-lg text-black dark:text-white ">
